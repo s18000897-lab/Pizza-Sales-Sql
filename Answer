@@ -1,3 +1,4 @@
+BASIC
 Ans-1 SELECT COUNT(order_id) 
       FROM orders
 Ans-2 SELECT SUM(quantity*price) 
@@ -24,6 +25,7 @@ Ans-5 SELECT name,COUNT(order_id),SUM(quantity)
       GROUP BY name
       ORDER BY COUNT(order_id) DESC 
       LIMIT 5
+INTERMEDIATE
 Ans-6 SELECT name,COUNT(quantity)
       FROM orders as o
       JOIN orders_details as od
@@ -39,6 +41,60 @@ Ans-7 SELECT COUNT(order_id),EXTRACT(HOUR FROM order_time)
 Ans-8 SELECT COUNT(name),category
       FROM pizza_types
       GROUP BY category
+Ans-9 SELECT AVG(quantity) FROM
+     (SELECT order_date,SUM(quantity) as quantity
+      FROM orders as o
+      JOIN orders_details as od
+      ON o.order_id=od.order_id
+      GROUP BY order_date) as order_quantity
+Ans-10 SELECT name,quantity*price as revenue
+       FROM orders_details as od
+       JOIN pizzas as p
+       ON od.pizza_id=p.pizza_id
+       JOIN pizza_types as pt
+       ON p.pizza_type_id=pt.pizza_type_id
+       GROUP BY quantity*price,name
+       ORDER BY quantity*price DESC
+       LIMIT 3
+ADVANCE
+Ans-11 SELECT category,ROUND(SUM(quantity*price)/(SELECT SUM(quantity*price)
+      FROM orders_details as od
+      JOIN pizzas as p
+      ON od.pizza_id=p.pizza_id)*100,2) as revenue
+      FROM pizza_types as pt
+      JOIN pizzas as p
+      ON pt.pizza_type_id=p.pizza_type_id
+      JOIN orders_details as od
+      ON p.pizza_id=od.pizza_id
+      GROUP BY category
+      ORDER BY revenue DESC
+Ans-12 SELECT order_date,SUM(revenue) OVER(ORDER BY order_date) as cum_revenue 
+      FROM
+      (SELECT order_date,SUM(quantity*price) as revenue
+      FROM orders_details as od
+      JOIN pizzas as p
+      ON od.pizza_id=p.pizza_id
+      JOIN orders as o
+      ON od.order_id=o.order_id
+      GROUP BY order_date) as sales
+Ans-13 SELECT  name,SUM(quantity*price)as revenue,category
+      FROM orders_details as od
+      JOIN pizzas as p
+      ON od.pizza_id=p.pizza_id
+      JOIN pizza_types as pt
+      ON p.pizza_type_id=pt.pizza_type_id
+      GROUP BY name,category
+      ORDER BY revenue DESC
+      LIMIT 3
+
+
+
+
+
+
+
+
+
 
 
 
